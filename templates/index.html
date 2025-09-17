@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AX Hotel - Bookings</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f0f8ff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .container {
+      margin-top: 30px;
+    }
+    .card {
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .btn-primary {
+      background-color: #007bff;
+      border: none;
+    }
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+    h1 {
+      color: #004080;
+      font-weight: bold;
+    }
+    table th {
+      background-color: #007bff;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center mb-4">AX Hotel - Booking Manager</h1>
+
+    <!-- Booking Form -->
+    <div class="card p-4 mb-4">
+      <h4>Add New Booking</h4>
+      <form action="/add" method="POST">
+        <div class="row mb-3">
+          <div class="col">
+            <input type="text" name="guest" class="form-control" placeholder="Guest Name" required>
+          </div>
+          <div class="col">
+            <input type="text" name="room" class="form-control" placeholder="Room Number" required>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col">
+            <label>Check-in</label>
+            <input type="date" name="checkin" class="form-control" required>
+          </div>
+          <div class="col">
+            <label>Check-out</label>
+            <input type="date" name="checkout" class="form-control" required>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col">
+            <input type="number" name="amount" class="form-control" placeholder="Amount (USD)" required>
+          </div>
+          <div class="col">
+            <select name="payment" class="form-control" required>
+              <option value="Cash">Cash</option>
+              <option value="Card">Card</option>
+              <option value="Pending">Pending</option>
+            </select>
+          </div>
+          <div class="col">
+            <select name="source" class="form-control" required>
+              <option value="Face to Face">Face to Face</option>
+              <option value="Agoda">Agoda</option>
+              <option value="Booking.com">Booking.com</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="mb-3">
+          <input type="email" name="email" class="form-control" placeholder="Customer Email (for receipt)" required>
+        </div>
+        <div class="mb-3">
+          <textarea name="notes" class="form-control" placeholder="Notes"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Booking & Send Receipt</button>
+      </form>
+    </div>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="mb-3">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Bookings Table -->
+    <div class="card p-4">
+      <h4>All Bookings</h4>
+      <table class="table table-striped mt-3">
+        <thead>
+          <tr>
+            <th>Guest</th>
+            <th>Room</th>
+            <th>Check-in</th>
+            <th>Check-out</th>
+            <th>Amount</th>
+            <th>Payment</th>
+            <th>Source</th>
+            <th>Email</th>
+            <th>Notes</th>
+            <th>WhatsApp</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for b in bookings %}
+          <tr>
+            <td>{{ b.guest }}</td>
+            <td>{{ b.room }}</td>
+            <td>{{ b.checkin }}</td>
+            <td>{{ b.checkout }}</td>
+            <td>{{ b.amount }}</td>
+            <td>{{ b.payment }}</td>
+            <td>{{ b.source }}</td>
+            <td>{{ b.email }}</td>
+            <td>{{ b.notes }}</td>
+            <td>
+              <a href="/whatsapp/{{ b.guest }}/{{ b.room }}/{{ b.checkin }}/{{ b.checkout }}/{{ b.amount }}/{{ b.payment }}/{{ b.source }}/{{ b.notes }}" 
+                 class="btn btn-success btn-sm" target="_blank">
+                WhatsApp
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
